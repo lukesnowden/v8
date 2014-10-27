@@ -75,6 +75,8 @@
 
 			var highest = 0;
 
+			var peaks = 0;
+
 			var numberOfMilliseconds = opts.milliseconds;
 
 			var start = function() {
@@ -94,6 +96,8 @@
 							clearInterval( spark );
 							spark = null;
 							timeTotal = 0;
+							peaks = 0;
+							highest = 0;
 							clickTimes = [];
 
 						} else {
@@ -114,17 +118,22 @@
 							ev.milliseconds = numberOfMilliseconds;
 							ev.clickCount = clickTimes.length;
 							ev.updateFrequency = opts.updateFrequency;
-							ev.targetPercentage = ( clickTimes.length * 100 / opts.maxFrequency ).toFixed(0);
-
-							if( ev.targetPercentage > highest ) {
-								highest = ev.targetPercentage;
-							}
-
-							ev.highestPercentage = highest;
+							ev.targetPercentage = Number( ( clickTimes.length * 100 / opts.maxFrequency ).toFixed(0) );
 
 							if( ev.targetPercentage > 100 ) {
 								ev.targetPercentage = 100;
 							}
+							if( ev.targetPercentage > highest ) {
+								highest = ev.targetPercentage;
+							}
+							if( ev.targetPercentage == 100 ) {
+								peaks++;
+							} else {
+								peaks = 0;
+							}
+
+							ev.peaks = peaks;
+							ev.highestPercentage = highest;
 							obj.trigger( ev );
 
 						}
